@@ -1,17 +1,19 @@
 #include <SDL2/SDL.h>
+#include <iostream>
 
 class Platform {
    public:
     Platform(char const* title, int windowWidth, int windowHeight,
              int textureWidth, int textureHeight) {
-        SDL_Init(SDL_INIT_VIDEO);
+        SDL_Init(SDL_INIT_EVERYTHING);
 
-        window = SDL_CreateWindow(title, 0, 0, windowWidth, windowHeight,
-                                  SDL_WINDOW_SHOWN);
+        window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED,
+                                  SDL_WINDOWPOS_CENTERED, windowWidth,
+                                  windowHeight, SDL_WINDOW_SHOWN);
 
         renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
-        texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
+        texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_BGR24,
                                     SDL_TEXTUREACCESS_STREAMING, textureWidth,
                                     textureHeight);
     }
@@ -35,7 +37,11 @@ class Platform {
 
         SDL_Event event;
 
+        // int count = 0;
+
         while (SDL_PollEvent(&event)) {
+            // std::cout << count << std::endl;
+            // count++;
             switch (event.type) {
                 case SDL_QUIT: {
                     quit = true;

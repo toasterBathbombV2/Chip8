@@ -12,6 +12,7 @@
 #include <iostream>
 
 class chip8 {
+    // TODO change access level. Check what should be private
    public:
     void init();
     void loadROM(char* fileAddress);

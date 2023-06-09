@@ -3,9 +3,7 @@
 #include <ncurses.h>
 #include <stdlib.h>
 #include <time.h>
-
 #include <cstring>
-
 #include "SDL2/SDL.h"
 
 const bool DEBUG = false;
@@ -74,22 +72,19 @@ void chip8::execute() {
     switch (opcode & 0xF000) {
         case 0x0000: {
             uint8_t i = opcode & 0x00FF;
-            if (i == 0x00E0) {
-                c00E0();
-                break;
+            switch (i) {
+                case 0x00E0: {
+                    c00E0();
+                } break;
+                case 0x00EE: {
+                    c00EE();
+                    break;
+                }
+                default:
+                    cerr << "CRITICAL: opcode 0 error!" << std::endl;
+                    break;
             }
-
-            else if (i == 0x00EE) {
-                c00EE();
-                break;
-            }
-
-            else {
-                std::cout << "CRITICAL: opcode 0 error!" << std::endl;
-            }
-
-            break;
-        }
+        } break;
 
         case 0x1000:
             c1NNN();
@@ -151,8 +146,11 @@ void chip8::execute() {
                     break;
 
                 default:
+                    cerr << "CRITICAL: opcode 8 error!" << endl;
                     break;
             }
+
+            break;
         }
 
         case 0x9000:
@@ -186,6 +184,7 @@ void chip8::execute() {
                     break;
 
                 default:
+                    cerr << "CRITICAL: opcode E error!" << endl;
                     break;
             }
             break;
@@ -222,8 +221,10 @@ void chip8::execute() {
                     cFX65();
                     break;
                 default:
+                    cerr << "CRITICAL: opcode F error!" << endl;
                     break;
             }
+            break;
         }
 
         default:
@@ -415,9 +416,9 @@ void chip8::cCXNN() {
 }
 
 void chip8::cDXYN() {
-    uint8_t Vx = (opcode & 0x0F00u) >> 8u;
-    uint8_t Vy = (opcode & 0x00F0u) >> 4u;
-    uint8_t hc8XY = opcode & 0x000Fu;
+    uint8_t Vx = (opcode & 0x0F00) >> 8;
+    uint8_t Vy = (opcode & 0x00F0) >> 4;
+    uint8_t hc8XY = opcode & 0x000F;
 
     // Wrap if going beyond screen boundaries
     uint8_t xPos = V[Vx] % 64;
